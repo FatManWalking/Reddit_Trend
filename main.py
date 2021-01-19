@@ -19,10 +19,13 @@ if __name__ == "__main__":
             subred = crawler.subreddit(name=f"{subreddit}", limit=10_000)
         
             for post in subred:
-                posts = posts.append([post.title, post.score, post.subreddit, post.num_comments, post.selftext, post.created])
+                posts = posts.append({'title':post.title, 'score':post.score, 'subreddit':post.subreddit, 'num_comments':post.num_comments, 'body':post.selftext, 'created':post.created},ignore_index=True)
         except:
             continue
-    posts.to_pickle("Datenbasis.pkl")
+        posts.to_pickle("Datenbasis.pkl")
+        
+        
+   
     """
         with open("basis.txt", "a") as file:
             file.write(f"\n ### {subreddit} ### \n")
