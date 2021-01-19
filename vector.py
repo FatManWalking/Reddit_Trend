@@ -2,8 +2,10 @@ import pandas as pd
 from datetime import datetime, timedelta
 from collections import Counter
 import math
+import json
 
-unpickled_df = pd.read_csv("pickled.csv", sep=";")
+#unpickled_df = pd.read_pickle("daten/Politik.pkl")
+unpickled_df = pd.read_csv("daten/pickled.csv", sep=";")
 #TODO: das hier vor dem pickeln machen
 df = unpickled_df[unpickled_df.subreddit != 'futbol'] #Delete Futbol (Italian, Spanish, Pizza, Pasta)
 df['created'] = pd.to_datetime(df['created'], unit='s') #Convert unix timestamp2Datetime
@@ -56,10 +58,10 @@ class Vektor():
 
         for tokens in df['title']:
             dict_ = dict(Counter(tokens))
-            tf.append({key:value for key,value/len(dict_) in dict_.items()})
+            tf.append({key:value/len(dict_) for key, value in dict_.items()})
             all_tokens.extend(dict_.keys())
 
-        return tf, set(all_tokens)
+        return tf, set(all_tokens), all_tokens
 
     def idf(self, df, all_tokens):
         """
@@ -71,7 +73,7 @@ class Vektor():
             for token in list(set(tokens)):
                 doc_freq[token] = doc_freq.get(token, 0) + 1
 
-        doc_freq = {key:value for key, math.log10(len(df) / value+1 in doc_freq.items()}
+        doc_freq = {key:math.log10(len(df) / value+1) for key, value  in doc_freq.items()}
         
         return doc_freq
 
@@ -85,8 +87,41 @@ test = Vektor(df)
 
 # Hier dann zwischen dem before und now df unterscheiden
 # test.df durch test.df_before und test.df_today ersetzen
-test.df['title'] = test.tokenizer(test.df)
 
-tf, all_tokens = test.tf(test.df)
-idf = idf(test.df, all_tokens)
-print(idf)
+
+test.df_before['title'] = test.tokenizer(test.df_before)
+test.df_today['title'] = test.tokenizer(test.df_today)
+
+counter = 0
+today = {}
+before = {}
+for i in [test.df_before, test.df_today]:
+
+    tf, set_all_tokens, all_tokens = test.tf(i)
+    idf = test.idf(i, set_all_tokens)
+    #print(idf)
+
+    oa_tf = dict(Counter(all_tokens))
+    #oa_tf * idf
+
+    final = dict()
+    for key in idf.keys():
+        final[key] = math.log10((oa_tf[key]/len(i)) * idf[key])
+
+    final = {k: v for k, v in sorted(final.items(), key=lambda item: item[1],reverse = False)}
+
+    if not counter:
+        before = final
+    else:
+        today = final
+    counter += 1
+
+#print(today)
+
+
+final_final = dict()
+for key in today.keys():
+    final_final[key] = today[key] / before.get(key, 0.1)
+final_final = {k: v for k, v in sorted(final_final.items(), key=lambda item: item[1],reverse = True)}
+print(final_final)
+    #doc_freq[token] = doc_freq.get(token, 0) + 1
