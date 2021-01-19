@@ -132,4 +132,4 @@ dmypy.json
 secrets.json
 
 # Datenbasis
-Datenbasis.pkl
+/daten
