@@ -2,23 +2,26 @@ from crawler import Crawler
 import pandas as pd
 
 subreddit_liste =   ["sports", "running", "bicycling", "golf", "fishing", "skiing", "sportsarefun", "tennis",
-                    "rugbyunion","discgolf","cricket","sailing","nfl","CFB","fantasyfootball","nflstreams",
+                    "rugbyunion","discgolf","cricket","sailing","nfl","CFB","fantasyfootball",
                     "baseball","mlb","fantasybaseball",
-                    "nba","collegebasketball","nbastreams","fantasybball","skateboarding","snowboarding","longboarding",
-                    "formula1","MMA","squaredcircle","ufc","boxing","wwe","MMAStreams","hockey","nhl","nhlstreams",
-                    "olympics","apocalympics2016","soccer","worldcup","Bundesliga","futbol","soccerstreams"]
+                    "nba","collegebasketball","fantasybball","skateboarding","snowboarding","longboarding",
+                    "formula1","MMA","squaredcircle","ufc","boxing","wwe","MMAStreams","hockey","nhl",
+                    "olympics","apocalympics2016","soccer","worldcup","Bundesliga","futbol"]
                     
 if __name__ == "__main__":
     
     crawler = Crawler()
     #subred = crawler.crawling()
-    posts = []
+    posts = pd.DataFrame(columns=['title', 'score', 'subreddit', 'num_comments', 'body', 'created'])
     for subreddit in subreddit_liste:
+        print(subreddit)
+        try:
+            subred = crawler.subreddit(name=f"{subreddit}", limit=10_000)
         
-        subred = crawler.subreddit(name=f"{subreddit}", limit=10_000)
-        for post in subred:
-            posts.append([post.title, post.score, post.subreddit, post.num_comments, post.selftext, post.created])
-    posts = pd.DataFrame(posts,columns=['title', 'score', 'subreddit', 'num_comments', 'body', 'created'])
+            for post in subred:
+                posts = posts.append([post.title, post.score, post.subreddit, post.num_comments, post.selftext, post.created])
+        except:
+            continue
     posts.to_pickle("Datenbasis.pkl")
     """
         with open("basis.txt", "a") as file:
