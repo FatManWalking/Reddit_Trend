@@ -6,7 +6,7 @@ subreddit_liste =   ["sports", "running", "bicycling", "golf", "fishing", "skiin
                     "baseball","mlb","fantasybaseball",
                     "nba","collegebasketball","fantasybball","skateboarding","snowboarding","longboarding",
                     "formula1","MMA","squaredcircle","ufc","boxing","wwe","MMAStreams","hockey","nhl",
-                    "olympics","apocalympics2016","soccer","worldcup","Bundesliga","futbol"]
+                    "olympics","apocalympics2016","soccer","worldcup","Bundesliga"]
                     
 if __name__ == "__main__":
     
