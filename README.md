@@ -4,6 +4,7 @@ Crawling through specified Subreddits on Reddit.com to analyse Trends via NLP mo
 ## Usage
 if you want to use this for yourself request your own credentials and create a .json file to store your secrets in.
 Format:
+```json
 {
   "secret" : "30-chars",
   "api_id" : "14-chars",
@@ -11,3 +12,4 @@ Format:
   "user_agent" : "name of your app",
   "password" : "your reddit password"
 }
+```
