@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 posts = posts.append({'title':post.title, 'score':post.score, 'subreddit':post.subreddit, 'num_comments':post.num_comments, 'body':post.selftext, 'created':post.created},ignore_index=True)
         except:
             continue
-        posts.to_pickle("Datenbasis.pkl")
+        posts.to_pickle("DatenbasisSportsNew.pkl")
         
         
    
