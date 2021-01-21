@@ -45,14 +45,12 @@ all_tokens = set(all_tokens)
 
 
 doc_freq = dict.fromkeys(all_tokens, 0)
-#print(doc_freq)
-
 for tokens in df['title']:
     for token in list(set(tokens)):
         doc_freq[token] += 1
 for key in doc_freq.keys():
     doc_freq[key] = math.log10(len(df) / doc_freq[key]+1 ) #Smoothing +1
-#print(doc_freq)
+
 
 for key in doc_freq.keys():
     

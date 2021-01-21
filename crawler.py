@@ -4,10 +4,9 @@ import json
                     
 class Crawler():
 
-    def __init__(self, subreddits = "all"):
+    def __init__(self):
 
         self.credentials()
-        self.subreddits = subreddits
     
     def credentials(self):
         """
@@ -21,13 +20,13 @@ class Crawler():
         self.reddit = praw.Reddit(client_id = secrets["api_id"], client_secret = secrets["secret"], 
                     user_agent = secrets["user_agent"], username = secrets["username"], password = secrets["password"])
     
-    def crawling(self):
+    def crawling(self, searchword):
         """
-        Crawls through the list of subreddits on r/ListOfSubreddits
+        Crawls through the list of subreddits by topic
         """
-        return self.subreddit(name="ListOfSubreddits", limit=1)
+        return [subreddit for subreddit in self.reddit.subreddits.search_by_name(searchword)]
 
-    def subreddit(self, name="all", limit=10):
+    def subreddit(self, name="all", limit=10_000):
         """
         andere Optionen:
             hot, new, controversial, top, gilded
