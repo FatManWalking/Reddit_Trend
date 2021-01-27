@@ -26,9 +26,9 @@ if __name__ == "__main__":
         print(subreddit)
         try:
             subred = crawler.subreddit(name=f"{subreddit}", limit=10_000)
-        
             for post in subred:
-                if post.id in list(post["id"]):
+                
+                if post.id not in list(posts["id"]):
                     posts = posts.append({'title':post.title,'id':post.id, 'url':post.url, 'score':post.score, 'subreddit':post.subreddit, 'num_comments':post.num_comments, 'body':post.selftext, 'created':post.created},ignore_index=True)
         except:
             continue
