@@ -4,10 +4,9 @@ import json
                     
 class Crawler():
 
-    def __init__(self, subreddits = "all"):
+    def __init__(self):
 
         self.credentials()
-        self.subreddits = subreddits
     
     def credentials(self):
         """
@@ -21,15 +20,19 @@ class Crawler():
         self.reddit = praw.Reddit(client_id = secrets["api_id"], client_secret = secrets["secret"], 
                     user_agent = secrets["user_agent"], username = secrets["username"], password = secrets["password"])
     
-    def crawling(self):
+    def crawling(self, searchword):
         """
-        Crawls through the subreddit
+        Crawls through the list of subreddits by topic
         """
-        pass
+        return [subreddit for subreddit in self.reddit.subreddits.search_by_name(searchword)]
 
-    def subreddit(self, name="all", limit=10):
+    def subreddit(self, name="all", limit=10_000):
+        """
+        andere Optionen:
+            hot, new, controversial, top, gilded
+        """
         subred = self.reddit.subreddit(name)
-        return subred.hot(limit=limit)
+        return subred.new(limit=limit)
 
     def weighting(self):
         """
@@ -37,9 +40,13 @@ class Crawler():
         """
         pass
 
-    def dummy(self):
-        """
-        just a dummy
-        """
-        pass
+    def pandas_tab(self):
+
+        import pandas as pd
+        posts = []
+        ml_subreddit = self.reddit.subreddit('MachineLearning')
+        for post in ml_subreddit.hot(limit=10):
+            posts.append([post.title, post.score, post.id, post.subreddit, post.url, post.num_comments, post.selftext, post.created])
+        posts = pd.DataFrame(posts,columns=['title', 'score', 'id', 'subreddit', 'url', 'num_comments', 'body', 'created'])
+        print(posts)
 
