@@ -173,10 +173,14 @@ if __name__ == "__main__":
         
     filtered_trends = {word:value for word,value in final_final.items() if not word in set(stopwords.words('english'))}
     #print(filtered_trends)
-
+    
+    """ab hier beginnt Kontextaufruf
+    """
+    
     x = test.context(["Hhihi"], filtered_trends)
     for dic, word in x:
         n_dic = {k: v for k, v in sorted(dic[word].items(), key=lambda item: item[1],reverse = False)}
+        n_dic = [word for word,value in n_dic.items() if value < 0]
         print(word, n_dic)
         
     
