@@ -119,9 +119,56 @@ class Vektor():
         return context_dic
         
         
+def Ablauf(searchword):
+    df = auswahl(searchword)
+    test = Vektor(df)
+
+    test.df_before['title'] = test.tokenizer(test.df_before)
+    test.df_today['title'] = test.tokenizer(test.df_today)
+
+    counter = 0
+    today = {}
+    before = {}
+    for i in [test.df_before, test.df_today]:
+
+        tf, set_all_tokens, all_tokens = test.tf(i)
+        idf = test.idf(i, set_all_tokens)
+
+        oa_tf = dict(Counter(all_tokens))
+
+        final = dict()
+        for key in idf.keys():
+            final[key] = math.log10((oa_tf[key]/len(i)) * idf[key])
+
+        final = {k: v for k, v in sorted(final.items(), key=lambda item: item[1],reverse = False)}
+
+        if not counter:
+            before = final
+        else:
+            today = final
+        counter += 1
+
+    final_final = dict()
+    for key in today.keys():
+        final_final[key] = today[key] / before.get(key, 100)
+    final_final = {k: v for k, v in sorted(final_final.items(), key=lambda item: item[1],reverse = True)}
+    #print(final_final)
         
+    filtered_trends = {word:value for word,value in final_final.items() if not word in set(stopwords.words('english'))}
+    #print(filtered_trends)
+    
+    """ab hier beginnt Kontextaufruf
+    nicht vergessen: davor noch die wörter die nur 1 mal vorkommen löschen/ignorieren
+    """
+    
+    x = test.context(["Hhihi"], filtered_trends)
+    top_list = []
+    for dic, word in x:
+        n_dic = {k: v for k, v in sorted(dic[word].items(), key=lambda item: item[1],reverse = False)}
+        n_dic = [word for word,value in n_dic.items() if value < 0]
+        top_list.append((word, n_dic))
         
-        
+    return top_list
                 
             
     
