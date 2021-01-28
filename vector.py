@@ -3,12 +3,23 @@ from datetime import datetime, timedelta
 from collections import Counter
 import math
 import json
+import nltk
+from nltk.corpus import stopwords
 
-#unpickled_df = pd.read_pickle("daten/Politik.pkl")
-unpickled_df = pd.read_csv("daten/pickled.csv", sep=";")
-#TODO: das hier vor dem pickeln machen
-df = unpickled_df[unpickled_df.subreddit != 'futbol'] #Delete Futbol (Italian, Spanish, Pizza, Pasta)
-df['created'] = pd.to_datetime(df['created'], unit='s') #Convert unix timestamp2Datetime
+
+def auswahl(searchword):
+    killTags = ['futbol', 'newsokunomoral', 'newStreamers', 'newsbloopers', 'newsokur', 'NewSkaters', 'newsentences']
+    unpickled_df = pd.read_pickle(f"daten/{searchword}.pkl")
+    #unpickled_df = pd.read_csv("daten/pickled.csv", sep=";")
+    #TODO: das hier vor dem pickeln machen
+    #df = unpickled_df[unpickled_df.subreddit not in killTags] #Delete Futbol (Italian, Spanish, Pizza, Pasta)
+    #df = df_1[df_1.subreddit != 'newsokunomoral'] 
+    #df['created'] = pd.to_datetime(df['created'], unit='s') #Convert unix timestamp2Datetime
+    
+    df = unpickled_df.iloc[[index for index,row in unpickled_df.iterrows() if row['subreddit'] not in killTags]]
+    df['created'] = pd.to_datetime(df.loc[:,('created')], unit='s')
+    print(df.head(3))
+    return df
 
 
 class Vektor():
@@ -80,48 +91,58 @@ class Vektor():
     def tf_idf_modify(self):
         pass
     
+    def context(*trendwords):
+        pass
+        
+    
+if __name__ == "__main__":
+    searchword = str(input("Wonach suchst du?\n-->  "))
+    df = auswahl(searchword)
+    test = Vektor(df)
+
+    # Hier dann zwischen dem before und now df unterscheiden
+    # test.df durch test.df_before und test.df_today ersetzen
+
+
+    test.df_before['title'] = test.tokenizer(test.df_before)
+    test.df_today['title'] = test.tokenizer(test.df_today)
+
+    counter = 0
+    today = {}
+    before = {}
+    for i in [test.df_before, test.df_today]:
+
+        tf, set_all_tokens, all_tokens = test.tf(i)
+        idf = test.idf(i, set_all_tokens)
+        #print(idf)
+
+        oa_tf = dict(Counter(all_tokens))
+        #oa_tf * idf
+
+        final = dict()
+        for key in idf.keys():
+            final[key] = math.log10((oa_tf[key]/len(i)) * idf[key])
+
+        final = {k: v for k, v in sorted(final.items(), key=lambda item: item[1],reverse = False)}
+
+        if not counter:
+            before = final
+        else:
+            today = final
+        counter += 1
+
+    #print(today)
+
+
+    final_final = dict()
+    for key in today.keys():
+        final_final[key] = today[key] / before.get(key, 100)
+    final_final = {k: v for k, v in sorted(final_final.items(), key=lambda item: item[1],reverse = True)}
+    print(final_final)
+        #doc_freq[token] = doc_freq.get(token, 0) + 1
+        
+    filtered_trends = {word:value for word,value in final_final.items() if not word in set(stopwords.words('english'))}
+    print(filtered_trends)
 
     
-    
-test = Vektor(df)
 
-# Hier dann zwischen dem before und now df unterscheiden
-# test.df durch test.df_before und test.df_today ersetzen
-
-
-test.df_before['title'] = test.tokenizer(test.df_before)
-test.df_today['title'] = test.tokenizer(test.df_today)
-
-counter = 0
-today = {}
-before = {}
-for i in [test.df_before, test.df_today]:
-
-    tf, set_all_tokens, all_tokens = test.tf(i)
-    idf = test.idf(i, set_all_tokens)
-    #print(idf)
-
-    oa_tf = dict(Counter(all_tokens))
-    #oa_tf * idf
-
-    final = dict()
-    for key in idf.keys():
-        final[key] = math.log10((oa_tf[key]/len(i)) * idf[key])
-
-    final = {k: v for k, v in sorted(final.items(), key=lambda item: item[1],reverse = False)}
-
-    if not counter:
-        before = final
-    else:
-        today = final
-    counter += 1
-
-#print(today)
-
-
-final_final = dict()
-for key in today.keys():
-    final_final[key] = today[key] / before.get(key, 0.1)
-final_final = {k: v for k, v in sorted(final_final.items(), key=lambda item: item[1],reverse = True)}
-print(final_final)
-    #doc_freq[token] = doc_freq.get(token, 0) + 1
