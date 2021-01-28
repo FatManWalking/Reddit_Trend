@@ -175,6 +175,7 @@ if __name__ == "__main__":
     #print(filtered_trends)
     
     """ab hier beginnt Kontextaufruf
+    nicht vergessen: davor noch die wörter die nur 1 mal vorkommen löschen/ignorieren
     """
     
     x = test.context(["Hhihi"], filtered_trends)
