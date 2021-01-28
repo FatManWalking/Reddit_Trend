@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from collections import Counter
 import math
 import json
+
 import nltk
 from nltk.corpus import stopwords
 
@@ -20,6 +21,7 @@ def auswahl(searchword):
     df['created'] = pd.to_datetime(df.loc[:,('created')], unit='s')
     print(df.head(3))
     return df
+
 
 
 class Vektor():
