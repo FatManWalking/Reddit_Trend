@@ -91,9 +91,39 @@ class Vektor():
     def tf_idf_modify(self):
         pass
     
-    def context(*trendwords):
-        pass
+    def context(self, trendwords, filtered_trends):
+        trendwords = ['mcdonough', 'prolific']
+        for word in trendwords:
+            context_dic = self.title_context(word)
+            for key, value in context_dic.items():
+                for token, tf in value.items():
+                    value[token] = tf * filtered_trends[token]
+            yield context_dic, word
+                
+            
+    def title_context(self, word):
+        context_dic = {}
+        for tokens in self.df_today['title']:
+            if word in tokens:
+                tokens = [word for word in tokens if len(word)>2]
+                #print(f"prolific was here\n{tokens}\n")
+                if word in context_dic:
+                    context_dic[word]["counter"] += 1
+                    context_dic[word]["tokens"] += tokens
+                else: context_dic[word] = {"counter":1, "tokens":tokens}
+        for key, value in context_dic.items():
+            context_dic[key]["tokens"] = [word for word in value["tokens"] if (not word in set(stopwords.words('english'))) and (word != key)]
+            context_dic[key]["tokens"] = dict(Counter(value["tokens"]))
+            context_dic[key] = {word:float(value/context_dic[key]["counter"]) for word, value in context_dic[key]["tokens"].items()}
         
+        return context_dic
+        
+        
+        
+        
+        
+                
+            
     
 if __name__ == "__main__":
     searchword = str(input("Wonach suchst du?\n-->  "))
@@ -138,11 +168,16 @@ if __name__ == "__main__":
     for key in today.keys():
         final_final[key] = today[key] / before.get(key, 100)
     final_final = {k: v for k, v in sorted(final_final.items(), key=lambda item: item[1],reverse = True)}
-    print(final_final)
+    #print(final_final)
         #doc_freq[token] = doc_freq.get(token, 0) + 1
         
     filtered_trends = {word:value for word,value in final_final.items() if not word in set(stopwords.words('english'))}
-    print(filtered_trends)
+    #print(filtered_trends)
 
+    x = test.context(["Hhihi"], filtered_trends)
+    for dic, word in x:
+        n_dic = {k: v for k, v in sorted(dic[word].items(), key=lambda item: item[1],reverse = False)}
+        print(word, n_dic)
+        
     
 
