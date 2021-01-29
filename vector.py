@@ -11,6 +11,7 @@ from nltk.corpus import stopwords
 def auswahl(searchword):
     killTags = ['futbol', 'newsokunomoral', 'newStreamers', 'newsbloopers', 'newsokur', 'NewSkaters', 'newsentences']
     unpickled_df = pd.read_pickle(f"daten/{searchword}.pkl")
+    print('14')
     #unpickled_df = pd.read_csv("daten/pickled.csv", sep=";")
     #TODO: das hier vor dem pickeln machen
     #df = unpickled_df[unpickled_df.subreddit not in killTags] #Delete Futbol (Italian, Spanish, Pizza, Pasta)
@@ -35,17 +36,16 @@ class Vektor():
         splits dateframe in posts of the last 24h and before
         returns: 2 Dataframes (today, before)
         """
-        today = datetime.today() - timedelta(days=1)  #Immer die letzten 24h nehmen
+        today = datetime.today() - timedelta(days=1) 
+         #Immer die letzten 24h nehmen
         mask_today = (self.df['created'] > today)
+
         df_today = self.df.loc[mask_today]
         #len_today = len(df_today)
         df_today.reset_index(inplace=True,drop=True)
-
-        mask_before = (df['created'] < today) 
-        df_before = df.loc[mask_before]
-        #print(len(df_before))
+        mask_before = (self.df['created'] < today) 
+        df_before = self.df.loc[mask_before]
         df_before.reset_index(inplace=True,drop=True)
-
         return df_today, df_before
 
     def tokenizer(self, df):
@@ -53,6 +53,7 @@ class Vektor():
         splits the title of all posts in tokens
         return: dataframe series
         """
+        print('59')
         series = df['title']
         series = series.str.lower()
         series = series.str.replace('\d+', '')
@@ -100,6 +101,7 @@ class Vektor():
             for key, value in context_dic.items():
                 for token, tf in value.items():
                     value[token] = tf * filtered_trends[token]
+            print('104')
             yield context_dic, word
                 
             
@@ -107,27 +109,33 @@ class Vektor():
         context_dic = {}
         for tokens in self.df_today['title']:
             if word in tokens:
+                #print('111')
                 tokens = [word for word in tokens if len(word)>2]
+                #print('113')
                 #print(f"prolific was here\n{tokens}\n")
                 if word in context_dic:
                     context_dic[word]["counter"] += 1
                     context_dic[word]["tokens"] += tokens
                 else: context_dic[word] = {"counter":1, "tokens":tokens}
+        print('119')
         for key, value in context_dic.items():
+            print('121')
             context_dic[key]["tokens"] = [word for word in value["tokens"] if (not word in set(stopwords.words('english'))) and (word != key)]
             context_dic[key]["tokens"] = dict(Counter(value["tokens"]))
             context_dic[key] = {word:float(value/context_dic[key]["counter"]) for word, value in context_dic[key]["tokens"].items()}
-        
+            print(125)
+
         return context_dic
         
         
 def Ablauf(searchword):
     df = auswahl(searchword)
+    print('127')
     test = Vektor(df)
 
     test.df_before['title'] = test.tokenizer(test.df_before)
     test.df_today['title'] = test.tokenizer(test.df_today)
-
+    print('132')
     counter = 0
     today = {}
     before = {}
@@ -164,16 +172,20 @@ def Ablauf(searchword):
     """
     
     x = test.context(["Hhihi"], filtered_trends)
+    print('174')
     top_list = []
     for dic, word in x:
         n_dic = {k: v for k, v in sorted(dic[word].items(), key=lambda item: item[1],reverse = False)}
+        print('179')
         n_dic = [word for word,value in n_dic.items() if value < 0]
+        print('180')
         top_list.append((word, n_dic))
-        
+        print('180.5')
+    print('181') 
     return top_list
                 
             
-    
+"""    
 if __name__ == "__main__":
     searchword = str(input("Wonach suchst du?\n-->  "))
     df = auswahl(searchword)
@@ -223,15 +235,15 @@ if __name__ == "__main__":
     filtered_trends = {word:value for word,value in final_final.items() if not word in set(stopwords.words('english'))}
     #print(filtered_trends)
     
-    """ab hier beginnt Kontextaufruf
-    nicht vergessen: davor noch die wörter die nur 1 mal vorkommen löschen/ignorieren
-    """
+    #ab hier beginnt Kontextaufruf
+    #nicht vergessen: davor noch die wörter die nur 1 mal vorkommen löschen/ignorieren
+    
     
     x = test.context(["Hhihi"], filtered_trends)
     for dic, word in x:
         n_dic = {k: v for k, v in sorted(dic[word].items(), key=lambda item: item[1],reverse = False)}
         n_dic = [word for word,value in n_dic.items() if value < 0]
         print(word, n_dic)
-        
+"""   
     
 

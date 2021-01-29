@@ -7,7 +7,7 @@ import pandas as pd
 from bokeh.models.widgets import DataTable, DateFormatter, TableColumn, HTMLTemplateFormatter
 from bokeh.models import ColumnDataSource, CustomJS
 
-
+from vector import Ablauf
 from crawler import Crawler
 
 global main_layout
@@ -88,7 +88,8 @@ def calculate(current_words):
                 if post.id not in list(posts["id"]):
                     #print(76)
                     posts = posts.append({'title':post.title,'id':post.id, 'url':post.url, 'score':post.score, 'subreddit':post.subreddit, 'num_comments':post.num_comments, 'body':post.selftext, 'created':post.created},ignore_index=True)
-                    #print(78)
+                else:    
+                    break
         except:
             continue
     posts.to_pickle(f"daten/{searchword}.pkl")
@@ -96,19 +97,29 @@ def calculate(current_words):
 
     status = Paragraph(text = 'Status: Download erfolgreich')
     main_layout.children[0].children[3] = status
+    topwords = Ablauf(searchword)
+    print('101')
+    print(topwords)
+    create_table(topwords)
 
-    create_table()
 
+#[('mcdonough', ['denis', 'jennifer', 'granholm', 'linda', 'greenfield', 'ambassador']), 
+#('prolific', ['enrique', 'tarrio', 'ricky', 'vaughn', 'informer'])]
 
-
-
-def create_table():
-    words = ['GUTEN TAG', "HALLO"]
+def create_table(words):
+    #print('107')
     data = {}
-    for word in words:
-        data[word] = str('https://news.google.com/search?q='+word+'&hl=en-US&gl=US&ceid=US:en')    
-    datas = pd.DataFrame(data.items(), columns=['Word', 'News'])
 
+    print(data)
+    for word in words:
+        #print('W0',word[0])
+        #print(type(data))
+        #print(type(word[0]))
+
+        data[word[0]] = str('https://news.google.com/search?q='+word[0]+'&hl=en-US&gl=US&ceid=US:en') 
+    #print('114')
+    datas = pd.DataFrame(data.items(), columns=['Word', 'News'])
+    #print('116')
 
  
     col1 = TableColumn(field='News', title='News' ,formatter=HTMLTemplateFormatter(template = '<a target="_blank" href="<%= News %>"><%= value %></a>'))
