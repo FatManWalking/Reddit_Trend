@@ -137,7 +137,8 @@ class Vektor():
             for key, value in context_dic.items():
                 for token, tf in value.items():
                     value[token] = tf * filtered_trends[token]
-
+            for key, value in context_dic.items():
+                context_dic[key] = sort_dict(value, reverse=True)
             yield context_dic, word
 
     #TODO: Modify
@@ -156,7 +157,7 @@ class Vektor():
             context_dic[key]["tokens"] = dict(Counter(value["tokens"]))
             context_dic[key] = {word:float(value/context_dic[key]["counter"]) for word, value in context_dic[key]["tokens"].items()}
 
-        return sort_dict(context_dic, reverse=False)
+        return context_dic
 
 #renamed the old "auswahl" function
 def read_database(searchword):
@@ -240,13 +241,16 @@ def Ablauf(searchword):
     #print(ergebnis)
     trend_generator = datasource.context(list(ergebnis.keys())[:10], ergebnis)
     
-    for i in trend_generator:
-        print(i, "\n")
+    top_list = []
+    for related_words, word in trend_generator:
+        related_words = list(related_words.keys())[:5]
+        top_list.append((word, related_words))
         
-        
+    return top_list
+
 if __name__ == "__main__":
     
-    Ablauf("news")
+    #Ablauf("news")
     
     # 2021-01-30 17:50:55.699930
     # Wombats shit in squares

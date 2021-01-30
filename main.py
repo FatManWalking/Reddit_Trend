@@ -7,7 +7,7 @@ import pandas as pd
 from bokeh.models.widgets import DataTable, DateFormatter, TableColumn, HTMLTemplateFormatter
 from bokeh.models import ColumnDataSource, CustomJS
 
-from vector import Ablauf
+from trend_analysis import Ablauf
 from crawler import Crawler
 
 global main_layout
