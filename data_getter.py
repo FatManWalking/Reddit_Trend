@@ -18,9 +18,6 @@ economics = ["Economics","business","entrepreneur","marketing","BasicIncome","bu
 all_topics = sport+politik+economics
 print(all_topics)
 
-
-
-
 if __name__ == "__main__":
     searchword = str(input("In welchem Bereich suchst du Trends?"))
     crawler = Crawler()
@@ -39,6 +36,7 @@ if __name__ == "__main__":
                 
                 if post.id not in list(posts["id"]):
                     posts = posts.append({'title':post.title,'id':post.id, 'url':post.url, 'score':post.score, 'subreddit':post.subreddit, 'num_comments':post.num_comments, 'body':post.selftext, 'created':post.created},ignore_index=True)
+                else: break    
         except:
             continue
     posts.to_pickle(f"daten/{searchword}.pkl")
