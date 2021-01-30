@@ -72,6 +72,7 @@ class Vektor():
             
         return tf
 
+    # not activly used at the moment
     def within_tf(self, df):
         """calcs the within term freq over all titles to build word vectors
 
@@ -235,19 +236,34 @@ def Ablauf(searchword):
             trend = data_return
         elif name == "old":
             archiv = data_return
+    
     #print(sort_dict(trend["tf_idf_total"], reverse=False))
     ergebnis = {key:(value*(1/trend["tf_idf_total"][key])*whole["idf"][key]) for key, value in trend["total_tf"].items()}
     ergebnis = sort_dict(ergebnis, reverse=True)
     
     # Change the slicing index for more results
-    trend_generator = datasource.context(list(ergebnis.keys())[:15], ergebnis)
+    trend_generator = datasource.context(list(ergebnis.keys())[:], ergebnis)
     
+    # Set variables used to generate the table
     top_list = []
+    used_words = set()
+    limit = 0
+    
     for related_words, word in trend_generator:
         lenght = len(list(related_words[word].keys())) - 5
+        used_words = used_words | set(related_words[word].keys())
         related_words = list(related_words[word].keys())[:5]
-        top_list.append((word, related_words, lenght))
+        if word in used_words:
+            pass
+        else:
+            top_list.append((word, related_words, lenght))
+            limit += 1
         
+        if limit == 15:
+            return top_list
+        
+    # Just in-case return
+    print("Fallback")
     return top_list
 
 #if __name__ == "__main__":

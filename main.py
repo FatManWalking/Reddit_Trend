@@ -4,7 +4,7 @@ from bokeh.models.widgets import TextInput, Button, DataTable, TableColumn, Para
 from bokeh.models import ColumnDataSource
 import numpy as np
 import pandas as pd
-from bokeh.models.widgets import DataTable, DateFormatter, TableColumn, HTMLTemplateFormatter
+from bokeh.models.widgets import DataTable, DateFormatter, TableColumn, HTMLTemplateFormatter,Div
 from bokeh.models import ColumnDataSource, CustomJS
 
 from trend_analysis import Ablauf
@@ -14,8 +14,8 @@ global main_layout
 global anfrage 
 
 #Define Layout for Bokeh
-main_layout = layout(children=[[[],[],[],[]],
-                                [],
+main_layout = layout(children=[[],
+                                [[],[],[]],
                                 []])
 
 
@@ -28,10 +28,7 @@ def start_categories(attr,old,new):
     Calls calculate with predefined subreddits
     """
     global main_layout
-    text = Paragraph(text = str(popular_categories.active))
-    main_layout.children[1] = text
-    status2 = Paragraph(text = 'Status: Rechne...')
-    main_layout.children[0].children[3] = status2
+
     
     sport =   ["sports", "running", "bicycling", "golf", "fishing", "skiing", "sportsarefun", "tennis",
                     "rugbyunion","discgolf","cricket","sailing","nfl","CFB","fantasyfootball",
@@ -60,10 +57,6 @@ def startfunc():
     Calls calculate with Searchwords
     """
     global main_layout
-    text = Paragraph(text = anfrage.value)
-    main_layout.children[1] = text
-    status1 = Paragraph(text = 'Status: Rechne...')
-    main_layout.children[0].children[3] = status1
     current_words = anfrage.value
     current_words = current_words.split(', ')
     current_words.append(0)
@@ -75,8 +68,6 @@ def calculate(current_words):
     Manages the download of all posts
     """
     global main_layout
-    status1 = Paragraph(text = 'Status: Rechne...')
-    main_layout.children[0].children[3] = status1
     crawler = Crawler()
     subred_list = []
 
@@ -115,8 +106,7 @@ def calculate(current_words):
     posts.to_pickle(f"daten/{searchword}.pkl")
 
 
-    status = Paragraph(text = 'Status: Download erfolgreich')
-    main_layout.children[0].children[3] = status
+
 
     #Start the Function to get all topwords with the current trends
     topwords = Ablauf(searchword)
@@ -152,6 +142,8 @@ def create_table(words):
 
     main_layout.children[2] = data_table
 
+#Title
+title = Div(text="<b>Trend Analyzer</b>", style={'font-size': '400%', 'color': 'black'})
 
 
 #RadiobuttonGroup with predifined subreddist
@@ -159,19 +151,20 @@ popular_categories = RadioButtonGroup(labels=["sport", "politics", "economics", 
 popular_categories.on_change('active', start_categories)
 
 #Field for User input
-anfrage = TextInput(value = 'Hier Anfrage einfügen')
+anfrage = TextInput(value = "Please tell us the topic you're looking for")
 
 #Go-Button
-go_button = Button(label = 'Start der Analyse', button_type = 'success')
+go_button = Button(label = 'Start your analyses', button_type = 'success')
 go_button.on_click(startfunc)
 
-status = Paragraph(text = 'Status: Warte auf Input')
+
 
 #Define Layout, where which buttons should be
-main_layout.children[0].children[0] = anfrage
-main_layout.children[0].children[1] = go_button
-main_layout.children[0].children[2]= popular_categories
-main_layout.children[0].children[3] = status
+main_layout.children[1].children[0] = anfrage
+main_layout.children[1].children[1] = go_button
+main_layout.children[1].children[2]= popular_categories
+main_layout.children[0]= title
+
 
 
 curdoc().add_root(main_layout)
