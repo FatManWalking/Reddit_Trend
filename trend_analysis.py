@@ -170,8 +170,8 @@ def read_database(searchword):
     """
     # A list of subreddits found to have negativ impact on the analyses and no value
     killTags = ['futbol', 'newsokunomoral', 'newStreamers', 'newsbloopers', 'newsokur', 'NewSkaters', 'newsentences']
-    dataframe = pd.read_csv(f"daten/{searchword}.csv", sep=";")
-    
+    #dataframe = pd.read_csv(f"daten/{searchword}.csv", sep=";")
+    dataframe = pd.read_pickle(f"daten/{searchword}.pkl")
     df = dataframe.iloc[[index for index,row in dataframe.iterrows() if row['subreddit'] not in killTags]]
     # converts the unix-timestamp given by the API to datetime
     df['created'] = pd.to_datetime(df.loc[:,('created')], unit='s')
@@ -238,17 +238,19 @@ def Ablauf(searchword):
     #print(sort_dict(trend["tf_idf_total"], reverse=False))
     ergebnis = {key:(value*(1/trend["tf_idf_total"][key])*whole["idf"][key]) for key, value in trend["total_tf"].items()}
     ergebnis = sort_dict(ergebnis, reverse=True)
-    #print(ergebnis)
-    trend_generator = datasource.context(list(ergebnis.keys())[:10], ergebnis)
+    
+    # Change the slicing index for more results
+    trend_generator = datasource.context(list(ergebnis.keys())[:15], ergebnis)
     
     top_list = []
     for related_words, word in trend_generator:
-        related_words = list(related_words.keys())[:5]
-        top_list.append((word, related_words))
+        lenght = len(list(related_words[word].keys())) - 5
+        related_words = list(related_words[word].keys())[:5]
+        top_list.append((word, related_words, lenght))
         
     return top_list
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     
     #Ablauf("news")
     

@@ -127,6 +127,8 @@ def calculate(current_words):
 def create_table(words):
     """
     Takes output from Ablauf-function (=trendwords) and creates table on GUI
+    Args:
+        words(tuple) = a tuple containing (the trend word and a list of the related words)
     """
     data = {}
     _list = []
@@ -134,7 +136,8 @@ def create_table(words):
     #Create Link for Google News and unzips related words
     for word in words:
         data[word[0]] = str('https://news.google.com/search?q='+word[0]+'&hl=en-US&gl=US&ceid=US:en')
-        _list.append([word[1]])
+        string = ''.join(str(x+", ") for x in word[1])
+        _list.append([f"{string} and {word[2]} other(s)"])
 
     #Create Dataframe with all information, the GUI should show
     datas = pd.DataFrame(data.items(), columns=['Word', 'News'])
@@ -145,7 +148,7 @@ def create_table(words):
     col2 = TableColumn(field='Word', title='Word')
     col3 = TableColumn(field='Related Words', title='Related Words')
     Columns = [col2, col3, col1] 
-    data_table = DataTable(columns=Columns, source=ColumnDataSource(datas))
+    data_table = DataTable(columns=Columns, source=ColumnDataSource(datas), width = 1500, height = 1500, index_position=None)
 
     main_layout.children[2] = data_table
 
