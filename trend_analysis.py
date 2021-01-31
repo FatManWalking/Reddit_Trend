@@ -98,6 +98,7 @@ class Vektor():
             df (pd.dataframe): see above
         """
         # total number of documents
+        print(len(df))
         N = len(df)
         
         # number of documents containing a term
@@ -233,7 +234,9 @@ def Ablauf(searchword):
         elif name == "old":
             archiv = data_return
     
-    #print(sort_dict(trend["tf_idf_total"], reverse=False))
+    #Use the line below to check a single type of values
+    print(sort_dict(trend["tf_idf_total"], reverse=False))
+    
     ergebnis = {key:(value*(1/trend["tf_idf_total"][key])*whole["idf"][key]) for key, value in trend["total_tf"].items()}
     ergebnis = sort_dict(ergebnis, reverse=True)
     
