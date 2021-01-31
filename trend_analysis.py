@@ -121,7 +121,6 @@ class Vektor():
         """
         return {key:(tf[key]*idf[key]) for key in tf.keys()}
     
-    #TODO: Modify
     def context(self, trendwords, filtered_trends):
         """A Generator to give context to the found trendwords
         
@@ -142,7 +141,6 @@ class Vektor():
                 context_dic[key] = sort_dict(value, reverse=True)
             yield context_dic, word
 
-    #TODO: Modify
     def title_context(self, word):
         context_dic = {}
         for tokens in self.now['title']:
@@ -154,7 +152,7 @@ class Vektor():
                 else: context_dic[word] = {"counter":1, "tokens":tokens}
 
         for key, value in context_dic.items():
-            #context_dic[key]["tokens"] = [word for word in value["tokens"] if (not word in set(stopwords.words('english'))) and (word != key)]
+            # context_dic[key]["tokens"] = [word for word in value["tokens"] if (not word in set(stopwords.words('english'))) and (word != key)]
             context_dic[key]["tokens"] = dict(Counter(value["tokens"]))
             context_dic[key] = {word:float(value/context_dic[key]["counter"]) for word, value in context_dic[key]["tokens"].items()}
 
@@ -208,6 +206,7 @@ def Ablauf(searchword):
     archiv = dict()
     
     # Iterating of all three datasources
+    # Note: currently not activly using old
     for data,name in [(df, "all"), (now, "now"), (old, "old")]:
         
         #Use Tokenizer
@@ -225,9 +224,6 @@ def Ablauf(searchword):
         tf_idf_within = list()
         for i in within_tf:
             tf_idf_within.append(datasource.tf_idf(i, idf))
-        
-        #sort_dict(tf_idf_1, reverse=True)
-        #TODO: Skipped stopword removal
 
         data_return = {"total_tf":total_tf, "within_tf":within_tf, "idf":idf ,"tf_idf_total":tf_idf_total, "tf_idf_within":tf_idf_within}
         if name == "all":
@@ -262,7 +258,7 @@ def Ablauf(searchword):
         if limit == 15:
             return top_list
         
-    # Just in-case return
+    # Just in-case Fallback return
     print("Fallback")
     return top_list
 
