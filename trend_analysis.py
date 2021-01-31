@@ -259,7 +259,7 @@ def Ablauf(searchword):
             return top_list
         
     # Just in-case Fallback return
-    print("Fallback")
+    raise DataError(f"There seems to be something wrong with the database. Please check the {searchword}.pkl file to reproduce and fix the Error")
     return top_list
 
 #if __name__ == "__main__":
