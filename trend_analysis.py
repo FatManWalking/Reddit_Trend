@@ -73,13 +73,13 @@ class Vektor():
         return tf
 
     # not activly used at the moment
-    def within_tf(self, df):
+    def within_df(self, df):
         """calcs the within term freq over all titles to build word vectors
 
         Args:
             df (pd.dataframe): the database to calc the tf on
         Returns:
-            tf: A dic of the within_tf over the given document
+            tf: A dic of the within_df over the given document
         Note:
             A set of all tokens can be gained via total_tf.keys()
         """
@@ -214,7 +214,7 @@ def Ablauf(searchword):
         
         #Use tf calculation
         total_tf = datasource.total_tf(data)
-        within_tf = datasource.within_tf(data)
+        within_df = datasource.within_df(data)
         
         #Use idf calculation
         idf = datasource.idf(data)
@@ -222,10 +222,10 @@ def Ablauf(searchword):
         # Calc tf-idf
         tf_idf_total = datasource.tf_idf(total_tf, idf)
         tf_idf_within = list()
-        for i in within_tf:
+        for i in within_df:
             tf_idf_within.append(datasource.tf_idf(i, idf))
 
-        data_return = {"total_tf":total_tf, "within_tf":within_tf, "idf":idf ,"tf_idf_total":tf_idf_total, "tf_idf_within":tf_idf_within}
+        data_return = {"total_tf":total_tf, "within_df":within_df, "idf":idf ,"tf_idf_total":tf_idf_total, "tf_idf_within":tf_idf_within}
         if name == "all":
             whole = data_return
         elif name == "now":
