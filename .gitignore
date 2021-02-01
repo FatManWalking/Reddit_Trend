@@ -133,3 +133,6 @@ secrets.json
 
 # Datenbasis
 /daten
+
+# VS Code
+.vscode
