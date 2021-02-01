@@ -1,5 +1,5 @@
 # Reddit_Trend
-Crawling through specified Subreddits on Reddit.com to analyse Trends via NLP models.
+Crawling through specified Subreddits on Reddit.com to analyse Trends via TF-IDF in a self developt variant.
 
 ## Usage
 if you want to use this for yourself request your own credentials and create a .json file to store your secrets in.
