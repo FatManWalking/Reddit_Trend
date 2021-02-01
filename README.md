@@ -20,10 +20,10 @@ bokeh serve --show main.py
 ```
 
 ## Folders:
-####```/daten```: 
+#### ```/daten```: 
 Used database in pickle format. Note: make sure to use the same enviroment as the creator of the file to ensure consistency and functionality when using pickle.
 
-####```/Development```
+#### ```/Development```
 This folder contains files used to further develop and test the application and is not used in the actual application itself.
 
 
