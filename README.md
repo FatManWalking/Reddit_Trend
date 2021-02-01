@@ -15,9 +15,15 @@ Format:
 ```
 ## Run the Application
 Start Application by running:
+```git
 bokeh serve --show main.py
-in your command line while opened the folder
+```
 
 ## Folders:
-  - Daten: Got some Pickels of some Subreddits.
-  - Development
+####```/daten```: 
+Used database in pickle format. Note: make sure to use the same enviroment as the creator of the file to ensure consistency and functionality when using pickle.
+
+####```/Development```
+This folder contains files used to further develop and test the application and is not used in the actual application itself.
+
+
