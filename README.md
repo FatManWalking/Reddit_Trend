@@ -13,3 +13,11 @@ Format:
   "password" : "your reddit password"
 }
 ```
+## Run the Application
+Start Application by running:
+bokeh serve --show main.py
+in your command line while opened the folder
+
+## Folders:
+  - Daten: Got some Pickels of some Subreddits.
+  - Development
