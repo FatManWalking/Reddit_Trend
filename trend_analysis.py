@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from collections import Counter
 import math
 import json
-import nltk
 import praw
 #from nltk.corpus import stopwords
     
