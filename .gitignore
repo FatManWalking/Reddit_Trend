@@ -132,7 +132,7 @@ dmypy.json
 secrets.json
 
 # Datenbasis
-/daten
+#/daten
 
 # VS Code
 .vscode
